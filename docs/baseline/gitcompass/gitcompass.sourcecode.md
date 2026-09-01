@@ -20,6 +20,10 @@ Vue desktop UI
   -> system Git, Git config files, credential helpers, secure stores
 ```
 
+## Implemented P1 foundation
+
+The repository uses Go module `github.com/TheKhiem7/GitCompass`, Wails `v3.0.0-beta.8`, Vue 3, TypeScript, and Vite. `internal/git` owns safe system-Git discovery and read-only repository inspection. It invokes Git without a shell, rejects non-worktrees, and returns remotes plus effective configuration origin/scope, identity, and credential-helper information. The adapter does not write Git configuration or read credential payloads.
+
 Business logic must not live in Vue components. Suggested services are `ProfileService`, `RoutingService`, `RepositoryService`, `MaterializationService`, `IdentityGuardService`, `SettingsService`, and `DiagnosticsService`. The basic Guard flow is UI -> `IdentityGuardService.CheckRepository()` -> Routing Engine + Git Engine -> health result.
 
 ## Implementation governance

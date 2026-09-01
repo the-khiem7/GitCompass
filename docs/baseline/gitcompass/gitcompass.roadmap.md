@@ -15,7 +15,7 @@ No phase has implementation evidence. The stages below are planned and ordered b
 
 | Phase | Deliverable | Depends on | Status |
 |---|---|---|---|
-| P1 | Windows Git foundation | - | planned |
+| P1 | Windows Git foundation | - | complete |
 | P2 | Profile engine | P1 | planned |
 | P3 | Routing engine | P2 | planned |
 | P4 | Managed configuration materialization | P1-P3 | planned |
@@ -27,6 +27,8 @@ No phase has implementation evidence. The stages below are planned and ordered b
 ## P1 - Windows Git foundation
 
 Deliver Git for Windows discovery, safe Git command execution, repository detection, Git version inspection, effective configuration with origin and scope, remotes, effective commit identity, and credential-helper inspection. Before every Go code edit from this phase onward, invoke the repository `use-modern-go` skill and run its Modern Go Guidelines CLI for the target file. Acceptance requires temporary repositories demonstrating those reads against a real Git for Windows installation, including unavailable Git and malformed configuration failures.
+
+Completed with `internal/git`: Git discovery and repository inspection run against the installed Git for Windows 2.53.0.windows.1. Its focused tests create temporary repositories and verify identity, credential-helper, remote, origin/scope configuration, and non-repository behavior. `go test ./...`, `wails3 build`, and `wails3 doctor` passed; the Wails build produced `bin/gitcompass.exe`, while the desktop UI itself remains a later P6 acceptance gate.
 
 ## P2 - Profile engine
 
@@ -72,4 +74,4 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 ## Next action
 
-Create the Go/Wails repository skeleton only after confirming the desired project location and choosing the first executable P1 acceptance scenario: Git discovery plus `git config --show-origin --list` inspection in a disposable repository. Before writing its first Go file, use `use-modern-go`; before any Wails v3 project action, use both `wails3` and `wails:wails`.
+Implement P2 Profile CRUD and validation using the decided SQLite persistence boundary. Preserve the no-secrets rule, and add tests for incomplete and invalid Profile data before beginning P3 routing.

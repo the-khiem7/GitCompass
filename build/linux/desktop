@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=GitCompass
+Comment=Local Git identity and routing utility
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/gitcompass.exe %u
+Terminal=false
+Type=Application
+Icon=gitcompass.exe
+Categories=Utility;
+StartupWMClass=gitcompass.exe
+
+ 
