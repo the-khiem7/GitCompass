@@ -4,14 +4,14 @@ pack: "gitcompass"
 document: "roadmap"
 status: "active"
 updated: "2026-09-02"
-code_ref: "uncommitted"
+code_ref: "7efcbea2c9fcfdf60e8ae487390f1029ca799463"
 ---
 
 # GitCompass delivery roadmap
 
 ## Status
 
-No phase has implementation evidence. The stages below are planned and ordered by product dependency; passing builds or static checks later must not be recorded as proof that Git, credentials, native configuration, or Windows integrations work in practice.
+P1-P3 have focused implementation evidence; P4 is in progress. The stages remain ordered by product dependency; passing builds or static checks do not prove Git, credentials, native configuration, or Windows integrations work in practice.
 
 | Phase | Deliverable | Depends on | Status |
 |---|---|---|---|

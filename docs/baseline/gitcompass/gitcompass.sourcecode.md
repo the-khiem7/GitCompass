@@ -4,7 +4,7 @@ pack: "gitcompass"
 document: "sourcecode"
 status: "active"
 updated: "2026-09-02"
-code_ref: "uncommitted"
+code_ref: "7efcbea2c9fcfdf60e8ae487390f1029ca799463"
 ---
 
 # Planned architecture and configuration topology
