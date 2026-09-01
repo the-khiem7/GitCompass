@@ -18,7 +18,7 @@ No phase has implementation evidence. The stages below are planned and ordered b
 | P1 | Windows Git foundation | - | complete |
 | P2 | Profile engine | P1 | complete |
 | P3 | Routing engine | P2 | complete |
-| P4 | Managed configuration materialization | P1-P3 | planned |
+| P4 | Managed configuration materialization | P1-P3 | in progress |
 | P5 | Identity Guard and approved repair | P3-P4 | planned |
 | P6 | Desktop product | P2-P5 | planned |
 | P7 | Windows hardening | P1-P6 | planned |
@@ -45,6 +45,8 @@ Completed with `internal/routing`: exact repository, remote, folder, and Default
 ## P4 - Managed configuration materialization
 
 Deliver a GitCompass-owned root, profile fragments, global include integration, ordered Default/Folder/Remote/Exact conditional materialization, capability checks, stale Exact-rule handling, approved local-write exceptions, ownership metadata, idempotent apply, and clean removal. Acceptance requires before/after real Git config inspection proving precedence through config origin and scope, a moved Folder rule re-evaluates, a moved Exact rule becomes stale, an unsupported condition blocks instead of writing locally, unrelated user configuration is unchanged, repeated apply is stable, and uninstall removes only GitCompass-owned configuration.
+
+Initial implementation in `internal/materialize` generates owned Profile and root fragments in Default/Folder/Remote/Exact order, writes atomically, and inserts one idempotent global include without overwriting unrelated global configuration. Its focused test verifies repeated apply and preservation of an existing global setting. P4 remains in progress: clean removal, ownership metadata, capability checks, stale Exact handling, approved local exceptions, and real Git config-origin acceptance are still required.
 
 ## P5 - Identity Guard and approved repair
 
@@ -78,4 +80,4 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 ## Next action
 
-Implement P4 managed Git configuration materialization with generated owned fragments, ordered conditional includes, idempotent apply/remove, and real before/after config-origin inspection.
+Finish P4: add owned-config removal and metadata, capability checks, stale Exact handling, and temporary-repository tests that inspect real Git config origins and precedence before starting P5.

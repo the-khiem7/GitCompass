@@ -60,6 +60,8 @@ User-owned Git config
 
 The managed directory is expected to contain `C:\\Users\\User\\.gitcompass\\gitconfig` and `profiles\\personal.gitconfig`, `profiles\\company.gitconfig`, and equivalent future fragments. Its include order is Default, broad Folder, narrow Folder, Remote, then Exact Repository. Folder and normal Exact rules use `gitdir/i` against normalized Windows paths; Remote rules use `hasconfig:remote.*.url` only after a capability check and never include fragments that define remote URLs. A moved Folder rule re-evaluates by location, a Remote rule continues only while its URL matches, and a moved Exact rule becomes stale until explicitly rebound. Materialization blocks rather than silently falling back when a condition cannot be represented. Repository-local writes are minimal, reversible, ownership-tracked exceptions requiring approval of the exact file, key or managed include, current value, proposed value, and reason.
 
+`internal/materialize` currently creates managed profile fragments and a root fragment, then appends one minimal global include. It supports conditional Folder, Remote, and Exact fragments plus an unconditional Default fragment, but it has not yet implemented the capability, lifecycle, or local-exception safeguards required for full materialization.
+
 ## Planned modules
 
 ```text
