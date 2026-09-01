@@ -44,6 +44,8 @@ P2 implements the initial transactional schema migration for `schema_migrations`
 
 Resolution evaluates normalized repository identity against the precedence `Exact Repository > Remote > Folder > Default`, detects ambiguous/conflicting rules, and returns the winning Profile with an explanation. Remote analysis resolves the current branch's effective fetch/pull and default push targets from Git configuration and evaluates every remote URL. Different remote-to-Profile matches without an Exact Repository rule are a Routing Conflict with `Unknown` health and block materialization. An Exact Repository rule fixes the expected Profile, but Identity Guard still classifies an incompatible effective fetch or push target as `Mismatch` and incompatible secondary remotes as `Warning`. Guard also compares `user.name`, `user.email`, credential mechanism, SSH route if used, signing configuration, config origin, and unexpected local overrides. Health is `Healthy`, `Warning`, `Mismatch`, `Broken`, or `Unknown`; each state must include the observed facts and cause.
 
+`internal/routing` implements the initial pure resolution engine. It normalizes drive/case path forms, supports HTTPS and SSH remote URL matching, returns the winning rule and explanation, and blocks materialization on different Remote-rule Profiles. The Git adapter does not yet supply effective fetch/pull or push targets to this engine.
+
 ## Native configuration model
 
 The planned layout is:

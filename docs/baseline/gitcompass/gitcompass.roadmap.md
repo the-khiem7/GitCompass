@@ -17,7 +17,7 @@ No phase has implementation evidence. The stages below are planned and ordered b
 |---|---|---|---|
 | P1 | Windows Git foundation | - | complete |
 | P2 | Profile engine | P1 | complete |
-| P3 | Routing engine | P2 | planned |
+| P3 | Routing engine | P2 | complete |
 | P4 | Managed configuration materialization | P1-P3 | planned |
 | P5 | Identity Guard and approved repair | P3-P4 | planned |
 | P6 | Desktop product | P2-P5 | planned |
@@ -39,6 +39,8 @@ Completed with `internal/profile` and `internal/persistence`: Profile CRUD persi
 ## P3 - Routing engine
 
 Deliver exact-repository, remote, folder, and default rules; deterministic precedence; conflict detection; and a human-readable resolution explanation. Multi-remote routing must resolve Git's effective fetch/pull and default push targets, evaluate every remote, and block materialization when remote rules select different Profiles without an Exact Repository rule. Acceptance requires unit tests covering compatible remotes, conflicting remotes with and without an Exact rule, different fetch and push targets, overlapping rules, moved repositories, changed remotes, normalized drive/case paths, and no-match behavior.
+
+Completed with `internal/routing`: exact repository, remote, folder, and Default matching follows the required precedence with case-insensitive Windows-path normalization. Remote matching accepts HTTPS and SSH forms, reports conflicting Profile matches as non-materializable, and returns a winning rule plus explanation. Unit tests cover precedence, path normalization, conflicting multi-remote selection, and Default fallback. `go test ./...` passed; effective fetch/pull and push-target extraction remains to be wired from the Git adapter before P5.
 
 ## P4 - Managed configuration materialization
 
@@ -76,4 +78,4 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 ## Next action
 
-Implement P3 deterministic routing: exact repository, remote, folder, and Default precedence; an explainable result; and conflict tests for overlapping rules, normalized Windows paths, changed remotes, fetch/push targets, and no-match behavior.
+Implement P4 managed Git configuration materialization with generated owned fragments, ordered conditional includes, idempotent apply/remove, and real before/after config-origin inspection.
