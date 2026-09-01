@@ -22,6 +22,10 @@ Vue desktop UI
 
 Business logic must not live in Vue components. Suggested services are `ProfileService`, `RoutingService`, `RepositoryService`, `MaterializationService`, `IdentityGuardService`, `SettingsService`, and `DiagnosticsService`. The basic Guard flow is UI -> `IdentityGuardService.CheckRepository()` -> Routing Engine + Git Engine -> health result.
 
+## Implementation governance
+
+Before editing a Go file, use the repository `use-modern-go` skill and run its Modern Go Guidelines CLI against that file. Before creating or changing any Wails v3 application, service, binding, runtime call, lifecycle hook, CLI/build task, or packaging configuration, use both repository skills `wails3` and `wails:wails`. This project is v3-only: pin the chosen Wails v3 alpha version in `go.mod`, use the v3 `wails3` commands and service/binding model, and never introduce v2 imports, `wailsjs` bindings, `wails` CLI commands, or v2 runtime APIs.
+
 ## Domain model
 
 A Profile represents identity, HTTPS authentication context, optional SSH configuration, signing configuration, validation state, and metadata. Routing Rules associate a Profile using an exact repository path, a remote host/pattern, a folder prefix, or a default. Repository state records path, remotes, resolved Profile, effective identity, authentication method, health, config origin, and discovery metadata. Persistence also needs managed-config metadata, health cache, UI preferences, and migrations; it must not hold raw credentials.

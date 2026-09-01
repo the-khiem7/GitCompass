@@ -26,7 +26,7 @@ No phase has implementation evidence. The stages below are planned and ordered b
 
 ## P1 - Windows Git foundation
 
-Deliver Git for Windows discovery, safe Git command execution, repository detection, Git version inspection, effective configuration with origin and scope, remotes, effective commit identity, and credential-helper inspection. Acceptance requires temporary repositories demonstrating those reads against a real Git for Windows installation, including unavailable Git and malformed configuration failures.
+Deliver Git for Windows discovery, safe Git command execution, repository detection, Git version inspection, effective configuration with origin and scope, remotes, effective commit identity, and credential-helper inspection. Before every Go code edit from this phase onward, invoke the repository `use-modern-go` skill and run its Modern Go Guidelines CLI for the target file. Acceptance requires temporary repositories demonstrating those reads against a real Git for Windows installation, including unavailable Git and malformed configuration failures.
 
 ## P2 - Profile engine
 
@@ -46,7 +46,7 @@ Deliver expected-versus-effective comparison, Healthy/Warning/Mismatch/Broken/Un
 
 ## P6 - Desktop product
 
-Deliver Home, Profiles, Rules, Repositories, Settings, health views, repository detail, and Fix approval flows. Acceptance requires a desktop user to create two Profiles, route repositories, see why a Profile won, inspect config origin, and approve a mismatch repair without a public CLI.
+Deliver Home, Profiles, Rules, Repositories, Settings, health views, repository detail, and Fix approval flows. Before every Wails v3 code, configuration, binding generation, runtime API, lifecycle, CLI, build, or packaging action from this phase onward, use both the repository `wails3` and `wails:wails` skills; detect and retain Wails v3-only APIs, pin the selected alpha version, and do not mix v2 artifacts or commands. Acceptance requires a desktop user to create two Profiles, route repositories, see why a Profile won, inspect config origin, and approve a mismatch repair without a public CLI.
 
 ## P7 - Windows hardening
 
@@ -72,4 +72,4 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 ## Next action
 
-Create the Go/Wails repository skeleton only after confirming the desired project location and choosing the first executable P1 acceptance scenario: Git discovery plus `git config --show-origin --list` inspection in a disposable repository.
+Create the Go/Wails repository skeleton only after confirming the desired project location and choosing the first executable P1 acceptance scenario: Git discovery plus `git config --show-origin --list` inspection in a disposable repository. Before writing its first Go file, use `use-modern-go`; before any Wails v3 project action, use both `wails3` and `wails:wails`.

@@ -37,6 +37,10 @@ Identity Guard must detect, explain, recommend, and require user approval before
 
 The public product surface is a desktop utility. Business logic still belongs in independently testable Go services behind Wails bindings, so a future CLI can be added without moving domain logic out of the GUI. A public CLI is deferred until real demand justifies its support and compatibility burden.
 
+## D8 - Mandatory implementation skills - decided
+
+Every Go implementation change must use the repository `use-modern-go` skill, including its Modern Go Guidelines CLI before editing the target Go file. Every Wails v3 implementation action must use both repository skills: `wails3` for current v3 guidance and `wails:wails` to detect the version and prevent API mixing. This protects the codebase against outdated Go idioms and the incompatible Wails v2/v3 API, binding, runtime, CLI, and build models. Ignoring it risks compiling against the wrong interface, generating mismatched frontend bindings, or treating unstable v3 behavior as stable. Treating skill use as optional or relying on generic Wails examples was rejected because it cannot consistently enforce current, v3-only implementation practice; Wails v2 is rejected for this project unless a future explicit decision changes the stack.
+
 ## Q1 - Authentication-context verification - open
 
 The proposal distinguishes expected HTTPS context from actual credential selection, but it does not establish a safe, provider-neutral way to prove which account Git Credential Manager or another helper will use without exposing credentials or triggering unwanted authentication. Before P5, define what can be reported as configured, inferred, verified, or unknown for each helper.

@@ -30,6 +30,7 @@ The user should create distinct Git Profiles, assign them through exact-reposito
 - Routing precedence is Exact Repository, Remote, Folder, then Default. Resolution and health must be explainable.
 - The product is a focused identity/context manager, not a hosting platform, full Git GUI, password manager, secret vault, custom Git implementation, proxy daemon, authentication server, or mandatory public CLI.
 - The app must prioritize Windows realities: drive letters, case-insensitive paths, Git for Windows, Git Credential Manager, Windows Credential Manager, OpenSSH, junctions, long/Unicode paths, file locks, and path normalization.
+- From the first Go code change, use the repository's `use-modern-go` skill and its Modern Go Guidelines CLI. From the first Wails v3 code, configuration, binding, runtime, lifecycle, CLI, build, or packaging change, use both the repository's `wails3` and `wails:wails` skills; keep all Wails APIs and tooling strictly v3 and pin the selected v3 alpha version.
 
 ## Source coverage
 
