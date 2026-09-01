@@ -34,11 +34,11 @@ Deliver Profile CRUD, identity, HTTPS context and credential-helper references, 
 
 ## P3 - Routing engine
 
-Deliver exact-repository, remote, folder, and default rules; deterministic precedence; conflict detection; and a human-readable resolution explanation. Acceptance requires unit tests covering overlapping rules, moved repositories, changed remotes, normalized drive/case paths, and no-match behavior.
+Deliver exact-repository, remote, folder, and default rules; deterministic precedence; conflict detection; and a human-readable resolution explanation. Multi-remote routing must resolve Git's effective fetch/pull and default push targets, evaluate every remote, and block materialization when remote rules select different Profiles without an Exact Repository rule. Acceptance requires unit tests covering compatible remotes, conflicting remotes with and without an Exact rule, different fetch and push targets, overlapping rules, moved repositories, changed remotes, normalized drive/case paths, and no-match behavior.
 
 ## P4 - Managed configuration materialization
 
-Deliver a GitCompass-owned root, profile fragments, global include integration, conditional includes, repository-local materialization only where necessary, ownership metadata, idempotent apply, and clean removal. Acceptance requires before/after real Git config inspection proving that unrelated user configuration is unchanged, repeated apply is stable, and uninstall removes only GitCompass-owned configuration.
+Deliver a GitCompass-owned root, profile fragments, global include integration, ordered Default/Folder/Remote/Exact conditional materialization, capability checks, stale Exact-rule handling, approved local-write exceptions, ownership metadata, idempotent apply, and clean removal. Acceptance requires before/after real Git config inspection proving precedence through config origin and scope, a moved Folder rule re-evaluates, a moved Exact rule becomes stale, an unsupported condition blocks instead of writing locally, unrelated user configuration is unchanged, repeated apply is stable, and uninstall removes only GitCompass-owned configuration.
 
 ## P5 - Identity Guard and approved repair
 
@@ -67,7 +67,7 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 - Git's effective behavior is composed from system, global, conditional, and local sources, so a model-only implementation can misdiagnose the real source.
 - Credential helper behavior is provider and Windows-installation dependent; presence of configuration is not proof that authentication succeeds.
-- Multiple remotes may imply incompatible contexts and need a defined product policy before materialization.
+- Provider-specific credential behavior can still make an operation's account context unknown even after remote routing is deterministic.
 - File locks, junctions, path casing, and malformed include files can make apparently simple writes unsafe.
 
 ## Next action

@@ -28,11 +28,15 @@ Before editing a Go file, use the repository `use-modern-go` skill and run its M
 
 ## Domain model
 
-A Profile represents identity, HTTPS authentication context, optional SSH configuration, signing configuration, validation state, and metadata. Routing Rules associate a Profile using an exact repository path, a remote host/pattern, a folder prefix, or a default. Repository state records path, remotes, resolved Profile, effective identity, authentication method, health, config origin, and discovery metadata. Persistence also needs managed-config metadata, health cache, UI preferences, and migrations; it must not hold raw credentials.
+A Profile represents identity, HTTPS authentication context, optional SSH configuration, signing configuration, validation state, and metadata. Routing Rules associate a Profile using an exact repository path, a remote host/pattern, a folder prefix, or a default. Repository state records path, remotes, resolved Profile, effective identity, authentication method, health, config origin, and discovery metadata. Persistence uses an application-owned SQLite database for Profiles, rules, known repositories, discovery roots, managed-config metadata, settings, schema state, and migrations; health cache is rebuildable. The database stores intent and metadata only, not raw credentials.
+
+## Persistence boundary
+
+`internal/persistence` is the sole writer to a versioned relational SQLite schema. Core rows use stable identifiers; repository records retain display and normalized Windows paths. Embedded sequential migrations run in transactions with a busy timeout for transient locks, create a consistent backup before upgrade, roll back on failure, and support forward migration only. An older application version must refuse to write a newer schema.
 
 ## Resolution and health
 
-Resolution evaluates normalized repository identity against the precedence `Exact Repository > Remote > Folder > Default`, detects ambiguous/conflicting rules, and returns the winning Profile with an explanation. Identity Guard compares the expected Profile to actual `user.name`, `user.email`, remote context, credential mechanism, SSH route if used, signing configuration, config origin, and unexpected local overrides. Health is `Healthy`, `Warning`, `Mismatch`, `Broken`, or `Unknown`; each state must include the observed facts and cause.
+Resolution evaluates normalized repository identity against the precedence `Exact Repository > Remote > Folder > Default`, detects ambiguous/conflicting rules, and returns the winning Profile with an explanation. Remote analysis resolves the current branch's effective fetch/pull and default push targets from Git configuration and evaluates every remote URL. Different remote-to-Profile matches without an Exact Repository rule are a Routing Conflict with `Unknown` health and block materialization. An Exact Repository rule fixes the expected Profile, but Identity Guard still classifies an incompatible effective fetch or push target as `Mismatch` and incompatible secondary remotes as `Warning`. Guard also compares `user.name`, `user.email`, credential mechanism, SSH route if used, signing configuration, config origin, and unexpected local overrides. Health is `Healthy`, `Warning`, `Mismatch`, `Broken`, or `Unknown`; each state must include the observed facts and cause.
 
 ## Native configuration model
 
@@ -46,7 +50,7 @@ User-owned Git config
   -> effective Git configuration
 ```
 
-The managed directory is expected to contain `C:\\Users\\User\\.gitcompass\\gitconfig` and `profiles\\personal.gitconfig`, `profiles\\company.gitconfig`, and equivalent future fragments. Materialization translates Profile plus Routing intent into those fragments, conditional includes, or narrowly necessary repository-local values. It must be idempotent, minimal, reversible, ownership-aware, and capable of clean removal without deleting unrelated configuration.
+The managed directory is expected to contain `C:\\Users\\User\\.gitcompass\\gitconfig` and `profiles\\personal.gitconfig`, `profiles\\company.gitconfig`, and equivalent future fragments. Its include order is Default, broad Folder, narrow Folder, Remote, then Exact Repository. Folder and normal Exact rules use `gitdir/i` against normalized Windows paths; Remote rules use `hasconfig:remote.*.url` only after a capability check and never include fragments that define remote URLs. A moved Folder rule re-evaluates by location, a Remote rule continues only while its URL matches, and a moved Exact rule becomes stale until explicitly rebound. Materialization blocks rather than silently falling back when a condition cannot be represented. Repository-local writes are minimal, reversible, ownership-tracked exceptions requiring approval of the exact file, key or managed include, current value, proposed value, and reason.
 
 ## Planned modules
 
