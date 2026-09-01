@@ -4,7 +4,7 @@ pack: "gitcompass"
 document: "introduction"
 status: "active"
 updated: "2026-09-02"
-code_ref: "unknown"
+code_ref: "uncommitted"
 ---
 
 # GitCompass baseline
@@ -15,7 +15,7 @@ GitCompass is a planned Windows-first, local-first desktop utility for multi-acc
 
 ## Current truth
 
-P1 has a Wails v3 beta.8, Vue 3, TypeScript, and Vite skeleton plus a tested Go Git-inspection adapter. The adapter discovers the installed Git executable and inspects a real repository's effective configuration with origins and scopes, remotes, commit identity, and credential helper. No Profile, routing, materialization, Guard, or end-user desktop workflow is implemented yet. System Git remains the source of truth. Windows is Tier 1; Linux and macOS are future work.
+P1 has a Wails v3 beta.8, Vue 3, TypeScript, and Vite skeleton plus a tested Go Git-inspection adapter. P2 adds local SQLite Profile persistence and validation, storing identity plus helper/key references only. Routing, materialization, Guard, and end-user desktop workflow are not implemented yet. System Git remains the source of truth. Windows is Tier 1; Linux and macOS are future work.
 
 The lossless source artifact is [PROPOSAL.md](sources/PROPOSAL.md). It is retained inside this pack to make the pack safe to use after the root-level proposal is deleted. Its SHA-256 is `A455E5A76E9AF495FBC018817BC3CC36BF927395493A91A69C19D8F65C4D686C` and its raw bytes matched the root source on 2026-09-02.
 

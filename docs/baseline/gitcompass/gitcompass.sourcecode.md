@@ -4,7 +4,7 @@ pack: "gitcompass"
 document: "sourcecode"
 status: "active"
 updated: "2026-09-02"
-code_ref: "unknown"
+code_ref: "uncommitted"
 ---
 
 # Planned architecture and configuration topology
@@ -37,6 +37,8 @@ A Profile represents identity, HTTPS authentication context, optional SSH config
 ## Persistence boundary
 
 `internal/persistence` is the sole writer to a versioned relational SQLite schema. Core rows use stable identifiers; repository records retain display and normalized Windows paths. Embedded sequential migrations run in transactions with a busy timeout for transient locks, create a consistent backup before upgrade, roll back on failure, and support forward migration only. An older application version must refuse to write a newer schema.
+
+P2 implements the initial transactional schema migration for `schema_migrations` and `profiles`, a five-second SQLite busy timeout, UUID Profile identifiers, and timestamps. `internal/profile` owns validation and service behavior while `internal/persistence` is its storage adapter; no raw credential, password, token, or private-key field exists in the Profile model.
 
 ## Resolution and health
 

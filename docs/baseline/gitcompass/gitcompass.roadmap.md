@@ -4,7 +4,7 @@ pack: "gitcompass"
 document: "roadmap"
 status: "active"
 updated: "2026-09-02"
-code_ref: "unknown"
+code_ref: "uncommitted"
 ---
 
 # GitCompass delivery roadmap
@@ -16,7 +16,7 @@ No phase has implementation evidence. The stages below are planned and ordered b
 | Phase | Deliverable | Depends on | Status |
 |---|---|---|---|
 | P1 | Windows Git foundation | - | complete |
-| P2 | Profile engine | P1 | planned |
+| P2 | Profile engine | P1 | complete |
 | P3 | Routing engine | P2 | planned |
 | P4 | Managed configuration materialization | P1-P3 | planned |
 | P5 | Identity Guard and approved repair | P3-P4 | planned |
@@ -33,6 +33,8 @@ Completed with `internal/git`: Git discovery and repository inspection run again
 ## P2 - Profile engine
 
 Deliver Profile CRUD, identity, HTTPS context and credential-helper references, optional SSH support, signing configuration, metadata, and validation. Acceptance requires validation tests for incomplete and invalid profile data without handling raw credentials.
+
+Completed with `internal/profile` and `internal/persistence`: Profile CRUD persists to SQLite through the sole writer, uses stable UUIDs and UTC timestamps, and stores helper/key references but no credential payloads. Focused tests cover incomplete and invalid Profiles plus SQLite create, update, list, get, and delete. `go test ./...` and `wails3 build` passed.
 
 ## P3 - Routing engine
 
@@ -74,4 +76,4 @@ Research Linux and macOS only after Windows quality is satisfactory. Validate ab
 
 ## Next action
 
-Implement P2 Profile CRUD and validation using the decided SQLite persistence boundary. Preserve the no-secrets rule, and add tests for incomplete and invalid Profile data before beginning P3 routing.
+Implement P3 deterministic routing: exact repository, remote, folder, and Default precedence; an explainable result; and conflict tests for overlapping rules, normalized Windows paths, changed remotes, fetch/push targets, and no-match behavior.
