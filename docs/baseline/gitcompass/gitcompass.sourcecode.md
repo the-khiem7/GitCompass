@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "gitcompass"
 document: "sourcecode"
 status: "active"
-updated: "2026-09-02"
-code_ref: "7efcbea2c9fcfdf60e8ae487390f1029ca799463"
+updated: "2026-09-06"
+code_ref: "ee2d97d9429f0e24169fc707b002b1e7d4d496a8"
 ---
 
 # Planned architecture and configuration topology
@@ -60,7 +60,34 @@ User-owned Git config
 
 The managed directory is expected to contain `C:\\Users\\User\\.gitcompass\\gitconfig` and `profiles\\personal.gitconfig`, `profiles\\company.gitconfig`, and equivalent future fragments. Its include order is Default, broad Folder, narrow Folder, Remote, then Exact Repository. Folder and normal Exact rules use `gitdir/i` against normalized Windows paths; Remote rules use `hasconfig:remote.*.url` only after a capability check and never include fragments that define remote URLs. A moved Folder rule re-evaluates by location, a Remote rule continues only while its URL matches, and a moved Exact rule becomes stale until explicitly rebound. Materialization blocks rather than silently falling back when a condition cannot be represented. Repository-local writes are minimal, reversible, ownership-tracked exceptions requiring approval of the exact file, key or managed include, current value, proposed value, and reason.
 
-`internal/materialize` currently creates managed profile fragments and a root fragment, then appends one minimal global include. It supports conditional Folder, Remote, and Exact fragments plus an unconditional Default fragment, but it has not yet implemented the capability, lifecycle, or local-exception safeguards required for full materialization.
+`internal/materialize` currently creates managed profile fragments and a root fragment, then appends one minimal global include. `Manager.Apply` writes all Profile fragments, writes the root, and calls `ensureInclude`; no production service calls it yet. Profile values are interpolated directly, each file uses a fixed `.tmp` replacement path, the global include is detected by substring, and no lock, cleanup, manifest, or removal path exists. The root groups Default, Folder, Remote, and Exact rules but preserves caller order within each kind. Controlled Git 2.53 probes confirmed that current application patterns cannot be emitted unchanged: Folder needs recursive Git syntax, Exact needs the absolute Git directory, and Remote needs explicit Git URL glob families. The selected replacement architecture and reasoning live in D12 (desired-state materialization lifecycle) in `gitcompass.hallucination.md`.
+
+## Selected P4 continuation
+
+The decided materialization flow is `Inspect -> Plan -> Apply -> Verify`. It is not implemented behavior yet.
+
+```text
+User global config
+  -> exact include: ~/.gitcompass/gitconfig
+Stable GitCompass root
+  -> include: generations/<desired-hash>/gitconfig
+Immutable generation root
+  -> immutable Profile fragments
+```
+
+The compiler validates one Default, duplicate and conflicting rules, and Profile values before file creation. It sorts broad Folder rules before narrow Folder rules with stable tie-breakers, compiles Exact from `git rev-parse --absolute-git-dir`, and expands each logical Remote rule into explicit HTTPS and SCP-style SSH Git globs. Git executable/version-specific semantic probes gate every condition family. Native `git config` performs serialization and exact fixed-value mutation.
+
+SQLite should add only the metadata required to prove lifecycle ownership: managed installation and active generation state, a hash-bearing artifact manifest, and approval-fingerprinted local exceptions. Apply builds and validates a new immutable generation before switching the stable root. Remove first detaches the exact global include, verifies inactive origins, then deletes only manifest-listed artifacts whose ownership remains valid. A stale or changed artifact is preserved and reported.
+
+Exact rules retain the worktree display path and observed absolute Git directory. Missing, inaccessible, moved, and explicitly rebound states remain distinct; no automatic rebind is permitted. Linked worktrees receive a dedicated semantic acceptance path. A P4 local exception is limited to one approved local `include.path` targeting an owned per-repository fragment, with state re-read immediately before mutation; direct user-owned key repair remains P5 scope.
+
+## Authentication evidence model
+
+The Git adapter must expose the ordered credential-helper chain and origin/scope of the effective credential settings, not collapse repeated helpers into one value. A credential context contains protocol, exact host, optional username, and path only when effective `credential.useHttpPath` is true. Identity Guard combines core inspection with optional capability-probed provider adapters and returns `Configured`, `Bound`, `Operation verified`, or `Unknown` evidence without requesting credential payloads. Automatic checks never invoke `git credential fill` or a helper `get`; only an explicit user action may run a non-mutating network operation, and its success is stored as a timestamped operation observation rather than proof of a human account. D13 (evidence-labeled authentication verification) owns the decision reasoning.
+
+## Repository discovery lifecycle
+
+`internal/repository` will own explicit registration, candidate validation, user-selected roots, scan budgets, cancellation, and inventory state. `internal/persistence` will store roots, exclusions, scan checkpoints, last-complete timestamps, repository canonical/display paths, `missing_since`, and state. A scan has at most two concurrent root workers and a per-root pass budget of 30 seconds or 50,000 visited directories; exhausted work persists a resumable frontier. It detects a `.git` directory or file without entering `.git`, then delegates validation to the Git adapter. Reparse points and offline, network, or removable targets require explicit scope. No v1 watcher, service, OS-recents integration, or IDE-history integration exists. Inventory transitions are Active to Unavailable for inaccessible scope, Active to Missing only after a complete accessible scan, Missing to Archived after 30 days, and any non-deleted state to Active on rediscovery. D14 (opt-in bounded repository discovery) owns the decision reasoning.
 
 ## Planned modules
 

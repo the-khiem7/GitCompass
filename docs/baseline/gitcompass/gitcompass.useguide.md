@@ -3,8 +3,8 @@ baseline_schema: "2.0"
 pack: "gitcompass"
 document: "useguide"
 status: "active"
-updated: "2026-09-02"
-code_ref: "unknown"
+updated: "2026-09-06"
+code_ref: "ee2d97d9429f0e24169fc707b002b1e7d4d496a8"
 ---
 
 # Planned product and operator contract
@@ -20,6 +20,16 @@ code_ref: "unknown"
 ## Repository health contract
 
 `Healthy` means routing is deterministic, effective identity matches the Profile, the effective fetch/push contexts are coherent, signing matches where configured, and no unexpected override breaks intent. `Warning` includes incompatible secondary remotes after an Exact rule has resolved the repository Profile. `Mismatch` includes an effective fetch or push target that conflicts with that Profile. `Broken` means required configuration is invalid, such as a missing credential helper, missing SSH key, or malformed config. `Unknown` includes incompatible remote-to-Profile matches without an Exact rule; materialization is blocked in that state. A color or label alone is insufficient; every state must explain its evidence and cause.
+
+## Authentication evidence contract
+
+Authentication evidence is displayed independently from commit identity. `Configured` means GitCompass can explain the effective helper chain and credential context. `Bound` means a documented non-secret selector identifies the expected provider account. `Operation verified` means an explicit user-requested operation succeeded for the displayed remote and timestamp; it does not prove a human identity by itself. `Unknown` means no safe provider-neutral conclusion is available. Background checks never open a sign-in prompt, retrieve a token or password, call `git credential fill`, or inspect the operating-system credential store. Configured but unbound authentication is a Warning, a conflicting binding is a Mismatch, and a network failure remains Unknown unless Git specifically identifies authentication or configuration failure.
+
+## Repository discovery contract
+
+Repositories enter inventory only through Add Repository, an explicit inspection, or a user-selected discovery root. Adding a root and Manual Refresh start a scan; application startup refreshes roots whose last complete scan is older than 24 hours. Scans run only while the desktop app is open, are cancellable, and default to 32 roots, two concurrent workers, and 30 seconds or 50,000 visited directories per root pass with resumable progress. GitCompass does not enter `.git`, traverse reparse points, network/removable roots, or offline cloud placeholders by default, and does not read IDE history or scan the whole machine. Paths and metadata remain local.
+
+An inaccessible root marks repositories Unavailable without aging them. A complete accessible scan that no longer finds a repository marks it Missing; after 30 days it becomes Archived and hidden by default. Rediscovery restores Active. GitCompass never deletes a repository record automatically.
 
 ## Safety contract
 
